@@ -4,11 +4,15 @@ public class Store {
 
     private int id;
     private Employee[] numbersOfEmployees;
-    private int summaOfEmployees;
+    private String town;
 
-    public Store(int id, int summaOfEmployees) {
+    private String nameOfStore;
+
+
+    public Store(int id, String town, String nameOfStore) {
         this.id = id;
-        this.summaOfEmployees = summaOfEmployees;
+        this.town = town;
+        this.nameOfStore = nameOfStore;
     }
 
     public int getId() {
@@ -19,11 +23,27 @@ public class Store {
         this.id = id;
     }
 
-    public int getSummaOfEmployees() {
-        return summaOfEmployees;
+    public Employee[] getNumbersOfEmployees() {
+        return numbersOfEmployees;
     }
 
-    public void setSummaOfEmployees(int summaOfEmployees) {
-        this.summaOfEmployees = summaOfEmployees;
+    public void setNumbersOfEmployees(Employee[] numbersOfEmployees) {
+        this.numbersOfEmployees = numbersOfEmployees;
+    }
+
+    public String getTown() {
+        return town;
+    }
+
+    public void setTown(String town) {
+        this.town = town;
+    }
+
+    public String getNameOfStore() {
+        return nameOfStore;
+    }
+
+    public void setNameOfStore(String nameOfStore) {
+        this.nameOfStore = nameOfStore;
     }
 }
