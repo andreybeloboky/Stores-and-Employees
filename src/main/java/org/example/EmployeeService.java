@@ -18,7 +18,7 @@ public class EmployeeService {
 
     public void addEmployee(String s) {
         String[] emp = uncoverJSONService.uncoverJSON(s);
-   //     databaseRepository.insert(emp);
+        databaseRepository.insert(emp);
     }
 
     /**
