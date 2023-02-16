@@ -3,9 +3,7 @@ package org.example;
 public class Store {
 
     private int id;
-    private Employee[] numbersOfEmployees;
     private String town;
-
     private String nameOfStore;
 
 
@@ -21,14 +19,6 @@ public class Store {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public Employee[] getNumbersOfEmployees() {
-        return numbersOfEmployees;
-    }
-
-    public void setNumbersOfEmployees(Employee[] numbersOfEmployees) {
-        this.numbersOfEmployees = numbersOfEmployees;
     }
 
     public String getTown() {

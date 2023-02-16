@@ -43,7 +43,8 @@ public class ConsoleController {
                     String position = scanner.next();
                     System.out.println("Salary");
                     int salary = scanner.nextInt();
-                    employeeService.addEmployee(storeNumber, firstName, lastName, position, salary);
+                    String exampleOfJSON = "{" + "\"firstName\":" + firstName + ",\"lastName\":" + lastName + ",\"position\":" + position + ",\"salary\":" + salary + ",\"store\":" + storeNumber + "}";
+                    employeeService.addEmployee(exampleOfJSON);
                 }
                 case 2 -> {
                     System.out.println("What's id you want to delete?");

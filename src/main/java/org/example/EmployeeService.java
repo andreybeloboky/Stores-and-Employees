@@ -1,6 +1,12 @@
 package org.example;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class EmployeeService {
+
+    private static final DatabaseRepository databaseRepository = new DatabaseRepository();
+    private static final UncoverJSONService uncoverJSONService = new UncoverJSONService();
 
     /**
      * @param id
@@ -9,15 +15,10 @@ public class EmployeeService {
 
     }
 
-    /**
-     * @param storeNumber
-     * @param firstName
-     * @param lastName
-     * @param position
-     * @param salary
-     */
-    public void addEmployee(int storeNumber, String firstName, String lastName, String position, int salary) {
 
+    public void addEmployee(String s) {
+        String[] emp = uncoverJSONService.uncoverJSON(s);
+   //     databaseRepository.insert(emp);
     }
 
     /**
