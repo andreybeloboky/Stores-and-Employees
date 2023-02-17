@@ -1,4 +1,4 @@
-package org.example;
+package org.example.repository;
 
 import java.lang.annotation.Repeatable;
 import java.sql.*;

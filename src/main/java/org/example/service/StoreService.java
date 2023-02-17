@@ -1,4 +1,10 @@
-package org.example;
+package org.example.service;
+
+import org.example.Store;
+import org.example.exception.IncorrectException;
+import org.example.repository.DatabaseRepository;
+import org.example.service.EmployeeService;
+import org.example.validator.StoreNameValidator;
 
 import java.sql.*;
 import java.util.ArrayList;

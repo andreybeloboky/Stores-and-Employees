@@ -1,5 +1,8 @@
-package org.example;
+package org.example.service;
 
+import org.example.*;
+import org.example.exception.IncorrectException;
+import org.example.repository.DatabaseRepository;
 import org.json.JSONObject;
 
 import java.sql.*;

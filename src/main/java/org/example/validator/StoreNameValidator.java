@@ -1,4 +1,6 @@
-package org.example;
+package org.example.validator;
+
+import org.example.exception.IncorrectException;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
