@@ -1,7 +1,5 @@
 package org.example;
 
-
-import java.awt.*;
 import java.util.Scanner;
 
 public class ConsoleController {
@@ -32,48 +30,48 @@ public class ConsoleController {
                 case 1 -> {
                     System.out.println("Could you give me some information?");
                     System.out.println("Store where this person works");
-                    // will do checking numbers of stores.whether existing or not.
                     int storeNumber = scanner.nextInt();
                     System.out.println("First name");
                     String firstName = scanner.next();
                     System.out.println("Last name");
                     String lastName = scanner.next();
-                    // will do checking numbers of stores.whether existing or not.
-                    System.out.println("Position");
+                    System.out.println("Position: SA, Manager or Director");
                     String position = scanner.next();
                     System.out.println("Salary");
                     int salary = scanner.nextInt();
                     String exampleOfJSON = "{" + "\"firstName\":" + firstName + ",\"lastName\":" + lastName + ",\"position\":" + position + ",\"salary\":" + salary + ",\"store\":" + storeNumber + "}";
-                    employeeService.addEmployee(exampleOfJSON);
+                    System.out.println(employeeService.addEmployee(exampleOfJSON));
                 }
                 case 2 -> {
                     System.out.println("What's id you want to delete?");
                     int id = scanner.nextInt();
-                    employeeService.deleteEmployee(id);
+                    System.out.println(employeeService.deleteEmployee(id));
                 }
                 case 3 -> {
                     System.out.println("What's id you want to get?");
                     int id = scanner.nextInt();
-                    employeeService.getInfoFromIdEmployee(id);
+                    Employee emp = employeeService.getInfoFromIdEmployee(id);
+                    System.out.println(emp.toString());
                 }
                 case 4 -> {
                     System.out.println("Could you give me some information?");
                     System.out.println("Name of this store");
-                    // check, this name can be starting with HM
+                    System.out.println("Beginning with HM, ending number of store");
                     String storeName = scanner.next();
                     System.out.println("Town where this store is located");
                     String town = scanner.next();
-                    storeService.addStore(storeName, town);
+                    System.out.println(storeService.addStore(storeName, town));
                 }
                 case 5 -> {
                     System.out.println("What's id you want to delete?");
                     int id = scanner.nextInt();
-                    storeService.deleteStore(id);
+                    System.out.println(storeService.deleteStore(id));
                 }
                 case 6 -> {
                     System.out.println("What's id you want to get?");
                     int id = scanner.nextInt();
-                    storeService.getInfoFromIdStore(id);
+                    Store store = storeService.getInfoFromIdStore(id);
+                    System.out.println(store);
                 }
             }
         } else if (tap == 2) {

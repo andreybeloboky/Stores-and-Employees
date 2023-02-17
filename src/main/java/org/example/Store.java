@@ -17,23 +17,21 @@ public class Store {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public String getTown() {
         return town;
     }
 
-    public void setTown(String town) {
-        this.town = town;
-    }
 
     public String getNameOfStore() {
         return nameOfStore;
     }
 
-    public void setNameOfStore(String nameOfStore) {
-        this.nameOfStore = nameOfStore;
+    @Override
+    public String toString() {
+        return "Store{" +
+                "id=" + id +
+                ", town='" + town + '\'' +
+                ", nameOfStore='" + nameOfStore + '\'' +
+                '}';
     }
 }
