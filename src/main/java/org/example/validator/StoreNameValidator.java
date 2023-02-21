@@ -1,6 +1,6 @@
 package org.example.validator;
 
-import org.example.exception.IncorrectException;
+import org.example.exception.NoSuchException;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -17,7 +17,7 @@ public class StoreNameValidator {
         Pattern email = Pattern.compile(PATTERN_FIND_NAME);
         Matcher checkEmail = email.matcher(str);
         if (!checkEmail.matches()) {
-            throw new IncorrectException("Name " + str + " is incorrect");
+            throw new NoSuchException("Name " + str + " is incorrect");
         } else {
             return true;
         }

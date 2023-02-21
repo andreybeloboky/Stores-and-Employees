@@ -1,6 +1,12 @@
-package org.example;
+package org.example.controllers;
 
-import org.example.exception.IncorrectException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.example.exception.NoSuchException;
+import org.example.modal.Employee;
+import org.example.modal.Store;
+import org.example.modal.EmployeeCreateCommand;
+import org.example.modal.StoreCreateCommand;
 import org.example.service.EmployeeService;
 import org.example.service.StoreService;
 
@@ -10,6 +16,7 @@ public class ConsoleController {
 
     private static final EmployeeService employeeService = new EmployeeService();
     private static final StoreService storeService = new StoreService();
+    private static final ConsoleController controller = new ConsoleController();
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -28,28 +35,19 @@ public class ConsoleController {
             System.out.println("4 - add store to database.");
             System.out.println("5 - remove store to database.");
             System.out.println("6 - get information of store by ID.");
-            System.out.println("7 - get summa salary from every stores.");
+            System.out.println("7 - get summa salary from every employees.");
             int option = scanner.nextInt();
             switch (option) {
                 case 1 -> {
-                    System.out.println("Could you give me some information?");
-                    System.out.println("Store where this person works");
-                    int storeNumber = scanner.nextInt();
-                    System.out.println("First name");
-                    String firstName = scanner.next();
-                    System.out.println("Last name");
-                    String lastName = scanner.next();
-                    System.out.println("Position: SA, Manager or Director");
-                    String position = scanner.next();
-                    System.out.println("Salary");
-                    int salary = scanner.nextInt();
-                    String exampleOfJSON = "{" + "\"firstName\":" + firstName + ",\"lastName\":" + lastName + ",\"position\":" + position + ",\"salary\":" + salary + ",\"store\":" + storeNumber + "}";
-                    System.out.println(employeeService.addEmployee(exampleOfJSON));
+                    System.out.println("Enter JSON string");
+                    String exampleOfJSON = scanner.next();
+                    EmployeeCreateCommand employee = controller.getEmployeeObject(exampleOfJSON);
+                    employeeService.save(employee);
                 }
                 case 2 -> {
                     System.out.println("What's id you want to delete?");
                     int id = scanner.nextInt();
-                    System.out.println(employeeService.deleteEmployee(id));
+                    employeeService.deleteEmployee(id);
                 }
                 case 3 -> {
                     System.out.println("What's id you want to get?");
@@ -61,15 +59,15 @@ public class ConsoleController {
                     System.out.println("Could you give me some information?");
                     System.out.println("Name of this store");
                     System.out.println("Beginning with HM, ending number of store");
-                    String storeName = scanner.next();
                     System.out.println("Town where this store is located");
-                    String town = scanner.next();
-                    System.out.println(storeService.addStore(storeName, town));
+                    String json = scanner.next();
+                    StoreCreateCommand store = controller.getStoreObject(json);
+                    storeService.save(store);
                 }
                 case 5 -> {
                     System.out.println("What's id you want to delete?");
                     int id = scanner.nextInt();
-                    System.out.println(storeService.deleteStore(id));
+                    storeService.delete(id);
                 }
                 case 6 -> {
                     System.out.println("What's id you want to get?");
@@ -77,11 +75,43 @@ public class ConsoleController {
                     Store store = storeService.getInfoFromIdStore(id);
                     System.out.println(store);
                 }
+                case 7 -> System.out.println(employeeService.getAllSalaryOfEmployees());
+
             }
         } else if (tap == 2) {
             System.out.println("Finish. Thank you for spending your time here.");
         } else {
-            throw new IncorrectException("Wow, man, your number isn't 1 or 2.");
+            throw new NoSuchException("Wow, man, your number isn't 1 or 2.");
         }
+    }
+
+    /**
+     * @param json JSON string.
+     * @return employee object.
+     */
+    private EmployeeCreateCommand getEmployeeObject(String json) {
+        EmployeeCreateCommand employee = null;
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            employee = objectMapper.readValue(json, EmployeeCreateCommand.class);
+        } catch (NullPointerException ex) {
+            ex.printStackTrace();
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+        return employee;
+    }
+
+    private StoreCreateCommand getStoreObject(String json) {
+        StoreCreateCommand store = null;
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            store = objectMapper.readValue(json, StoreCreateCommand.class);
+        } catch (NullPointerException ex) {
+            ex.printStackTrace();
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+        return store;
     }
 }
