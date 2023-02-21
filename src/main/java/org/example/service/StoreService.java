@@ -1,6 +1,7 @@
 package org.example.service;
 
 import org.example.exception.IncorrectStoreNameException;
+import org.example.exception.NoSuchException;
 import org.example.modal.Store;
 import org.example.modal.StoreCreateCommand;
 import org.example.repository.StoreDatabaseRepository;
@@ -28,7 +29,9 @@ public class StoreService {
      * @param id which is needed to delete
      */
     public void delete(int id) {
-        databaseRepository.delete(id);
+        if (!databaseRepository.delete(id)) {
+            throw new NoSuchException("There isn't such a store");
+        }
     }
 
     /**
@@ -36,6 +39,11 @@ public class StoreService {
      * @return object store
      */
     public Store getInfoFromIdStore(int id) {
-        return databaseRepository.select(id);
+        Store store = databaseRepository.select(id);
+        if (store == null) {
+            throw new NoSuchException("There isn't such employee");
+        } else {
+            return store;
+        }
     }
 }

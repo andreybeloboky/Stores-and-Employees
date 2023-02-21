@@ -17,7 +17,9 @@ public class EmployeeService {
      * @param id - get id from user.
      */
     public void deleteEmployee(int id) {
-        databaseRepository.delete(id);
+        if (!databaseRepository.delete(id)) {
+            throw new NoSuchException("There isn't such a employee");
+        }
     }
 
     /**
@@ -25,12 +27,12 @@ public class EmployeeService {
      * @return employee object
      */
     public Employee getInfoFromIdEmployee(int id) {
-       Employee employee = databaseRepository.select(id);
-       if(employee == null){
-           throw new NoSuchException("There isn't such employee");
-       }else{
-           return employee;
-       }
+        Employee employee = databaseRepository.select(id);
+        if (employee == null) {
+            throw new NoSuchException("There isn't such employee");
+        } else {
+            return employee;
+        }
     }
 
     /**

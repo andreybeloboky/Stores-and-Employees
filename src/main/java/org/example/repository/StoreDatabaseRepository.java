@@ -9,7 +9,10 @@ public class StoreDatabaseRepository {
     private static final String URL = "jdbc:mysql://localhost:3306/employee";
     private static final String LOGIN = "root";
     private static final String PASSWORD = "HaZhlkZEd1wolFs";
-    Connection connection;
+    private static final String INSERT = "INSERT INTO store(`name store`, `town`) VALUES (?,?)";
+    private static final String DELETE = "DELETE FROM store WHERE store.id = ?";
+    private static final String SELECT = "SELECT * FROM store WHERE store.id = ?";
+    private final Connection connection;
 
     {
         try {
@@ -19,8 +22,11 @@ public class StoreDatabaseRepository {
         }
     }
 
+    /**
+     * @param store which is needed to insert to db.
+     */
     public void insert(Store store) {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO store(`name store`, `town`) VALUES (?,?)")) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT)) {
             preparedStatement.setString(1, store.getNameOfStore());
             preparedStatement.setString(2, store.getTown());
             preparedStatement.execute();
@@ -29,20 +35,28 @@ public class StoreDatabaseRepository {
         }
     }
 
-    public void delete(int id) {
-        try (Statement statement = connection.createStatement()) {
-            if (statement.execute("DELETE FROM store WHERE store.id = " + id)) {
-                throw new NoSuchException("There isn't such a store");
-            }
+    /**
+     * @param id which is needed to delete
+     * @return boolean type to understand whether execute or not.
+     */
+    public boolean delete(int id) {
+        try (PreparedStatement statement = connection.prepareStatement(DELETE)) {
+            statement.setInt(1, id);
+            return statement.execute();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
+    /**
+     * @param id which is needed to get
+     * @return object store.
+     */
     public Store select(int id) {
         Store store = null;
-        try (Statement statement = connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM store WHERE store.id = " + id);
+        try (PreparedStatement statement = connection.prepareStatement(SELECT)) {
+            statement.setInt(1, id);
+            ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 store = new Store(resultSet.getString(2), resultSet.getString(3));
                 store.setId(resultSet.getInt(1));
