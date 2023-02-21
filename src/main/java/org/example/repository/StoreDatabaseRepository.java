@@ -1,6 +1,5 @@
 package org.example.repository;
 
-import org.example.exception.NoSuchException;
 import org.example.modal.Store;
 
 import java.sql.*;

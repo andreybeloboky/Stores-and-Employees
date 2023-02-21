@@ -49,9 +49,9 @@ public class EmployeeService {
      * @return summa of all employees
      */
     public int getAllSalaryOfEmployees() {
-        ArrayList<Integer> salaryOfEmpl = databaseRepository.salary();
+        ArrayList<Integer> salaryOfEmployee = databaseRepository.salary();
         int summa = 0;
-        for (Integer sum : salaryOfEmpl) {
+        for (Integer sum : salaryOfEmployee) {
             summa += sum;
         }
         return summa;
