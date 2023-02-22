@@ -2,11 +2,11 @@ package org.example.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.example.exception.NoSuchException;
+import org.example.exception.NoSuchEntityException;
 import org.example.modal.Employee;
 import org.example.modal.Store;
-import org.example.modal.EmployeeCreateCommand;
-import org.example.modal.StoreCreateCommand;
+import org.example.dto.EmployeeCreateCommand;
+import org.example.dto.StoreCreateCommand;
 import org.example.service.EmployeeService;
 import org.example.service.StoreService;
 
@@ -62,12 +62,12 @@ public class ConsoleController {
                     System.out.println("Town where this store is located");
                     String json = scanner.next();
                     StoreCreateCommand store = controller.getStoreObject(json);
-                    storeService.save(store);
+                    storeService.add(store);
                 }
                 case 5 -> {
                     System.out.println("What's id you want to delete?");
                     int id = scanner.nextInt();
-                    storeService.delete(id);
+                    storeService.remove(id);
                 }
                 case 6 -> {
                     System.out.println("What's id you want to get?");
@@ -75,43 +75,39 @@ public class ConsoleController {
                     Store store = storeService.getInfoFromIdStore(id);
                     System.out.println(store);
                 }
-                case 7 -> System.out.println(employeeService.getAllSalaryOfEmployees());
+                case 7 -> System.out.println(employeeService.getAllSalaryOfEmployees().getSum());
 
             }
         } else if (tap == 2) {
             System.out.println("Finish. Thank you for spending your time here.");
         } else {
-            throw new NoSuchException("Wow, man, your number isn't 1 or 2.");
+            throw new NoSuchEntityException("Wow, man, your number isn't 1 or 2.");
         }
     }
 
     /**
-     * @param json JSON string.
-     * @return employee object.
+     * @param json input and then object output. User gives it.
+     * @return employee object from json format.
      */
     private EmployeeCreateCommand getEmployeeObject(String json) {
-        EmployeeCreateCommand employee = null;
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            employee = objectMapper.readValue(json, EmployeeCreateCommand.class);
-        } catch (NullPointerException ex) {
-            ex.printStackTrace();
+            return objectMapper.readValue(json, EmployeeCreateCommand.class);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-        return employee;
     }
 
+    /**
+     * @param json input and then object output. User gives it.
+     * @return store object from json format.
+     */
     private StoreCreateCommand getStoreObject(String json) {
-        StoreCreateCommand store = null;
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            store = objectMapper.readValue(json, StoreCreateCommand.class);
-        } catch (NullPointerException ex) {
-            ex.printStackTrace();
+            return objectMapper.readValue(json, StoreCreateCommand.class);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-        return store;
     }
 }

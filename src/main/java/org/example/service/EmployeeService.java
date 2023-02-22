@@ -1,35 +1,38 @@
 package org.example.service;
 
-import org.example.exception.NoSuchException;
+import org.example.exception.NoSuchEntityException;
 import org.example.modal.Employee;
-import org.example.modal.EmployeeCreateCommand;
+import org.example.dto.EmployeeCreateCommand;
 import org.example.modal.Store;
 import org.example.repository.EmployeeDatabaseRepository;
 
 import java.util.ArrayList;
+import java.util.IntSummaryStatistics;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class EmployeeService {
-    private final EmployeeDatabaseRepository databaseRepository = new EmployeeDatabaseRepository();
-
+    private final EmployeeDatabaseRepository employeeDatabaseRepository = new EmployeeDatabaseRepository();
     private final StoreService storeService = new StoreService();
 
     /**
      * @param id - get id from user.
      */
     public void deleteEmployee(int id) {
-        if (!databaseRepository.delete(id)) {
-            throw new NoSuchException("There isn't such a employee");
+        if (!employeeDatabaseRepository.remove(id)) {
+            throw new NoSuchEntityException("There isn't such a employee id:" + id);
         }
     }
 
     /**
-     * @param id which need to get from user.
+     * @param id which need to got from user.
      * @return employee object
      */
     public Employee getInfoFromIdEmployee(int id) {
-        Employee employee = databaseRepository.select(id);
-        if (employee == null) {
-            throw new NoSuchException("There isn't such employee");
+        Employee employee = employeeDatabaseRepository.load(id);
+        Optional<Employee> employeeOptional = Optional.ofNullable(employee);
+        if (employeeOptional.isPresent()) {
+            throw new NoSuchEntityException("There isn't such employee id: " + id);
         } else {
             return employee;
         }
@@ -42,18 +45,14 @@ public class EmployeeService {
         Store store = storeService.getInfoFromIdStore(createCommand.getStoreId());
         Employee employee = new Employee(createCommand.getFirstName(), createCommand.getLastName(),
                 createCommand.getPosition(), createCommand.getSalary(), store);
-        databaseRepository.insert(employee);
+        employeeDatabaseRepository.add(employee);
     }
 
     /**
      * @return summa of all employees
      */
-    public int getAllSalaryOfEmployees() {
-        ArrayList<Integer> salaryOfEmployee = databaseRepository.salary();
-        int summa = 0;
-        for (Integer sum : salaryOfEmployee) {
-            summa += sum;
-        }
-        return summa;
+    public IntSummaryStatistics getAllSalaryOfEmployees() {
+        ArrayList<Employee> employees = employeeDatabaseRepository.loadAllEmployees();
+        return employees.stream().collect(Collectors.summarizingInt(Employee::getSalary));
     }
 }

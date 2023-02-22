@@ -12,8 +12,10 @@ public class Store {
         this.nameOfStore = nameOfStore;
     }
 
-    public void setId(int id) {
+    public Store(int id, String town, String nameOfStore) {
         this.id = id;
+        this.town = town;
+        this.nameOfStore = nameOfStore;
     }
 
     public int getId() {

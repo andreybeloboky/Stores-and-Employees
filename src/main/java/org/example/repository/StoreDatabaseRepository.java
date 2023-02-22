@@ -1,5 +1,6 @@
 package org.example.repository;
 
+import org.example.exception.IncorrectSQLInputException;
 import org.example.modal.Store;
 
 import java.sql.*;
@@ -11,26 +12,17 @@ public class StoreDatabaseRepository {
     private static final String INSERT = "INSERT INTO store(`name store`, `town`) VALUES (?,?)";
     private static final String DELETE = "DELETE FROM store WHERE store.id = ?";
     private static final String SELECT = "SELECT * FROM store WHERE store.id = ?";
-    private final Connection connection;
-
-    {
-        try {
-            connection = DriverManager.getConnection(URL, LOGIN, PASSWORD);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     /**
      * @param store which is needed to insert to db.
      */
-    public void insert(Store store) {
-        try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT)) {
+    public void add(Store store) {
+        try (PreparedStatement preparedStatement = openConnection().prepareStatement(INSERT)) {
             preparedStatement.setString(1, store.getNameOfStore());
             preparedStatement.setString(2, store.getTown());
             preparedStatement.execute();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new IncorrectSQLInputException("Incorrect date", e);
         }
     }
 
@@ -38,12 +30,12 @@ public class StoreDatabaseRepository {
      * @param id which is needed to delete
      * @return boolean type to understand whether execute or not.
      */
-    public boolean delete(int id) {
-        try (PreparedStatement statement = connection.prepareStatement(DELETE)) {
+    public boolean remove(int id) {
+        try (PreparedStatement statement = openConnection().prepareStatement(DELETE)) {
             statement.setInt(1, id);
             return statement.execute();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new IncorrectSQLInputException("Incorrect date", e);
         }
     }
 
@@ -51,18 +43,21 @@ public class StoreDatabaseRepository {
      * @param id which is needed to get
      * @return object store.
      */
-    public Store select(int id) {
-        Store store = null;
-        try (PreparedStatement statement = connection.prepareStatement(SELECT)) {
+    public Store add(int id) {
+        try (PreparedStatement statement = openConnection().prepareStatement(SELECT)) {
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
-            while (resultSet.next()) {
-                store = new Store(resultSet.getString(2), resultSet.getString(3));
-                store.setId(resultSet.getInt(1));
-            }
+            return new Store(resultSet.getInt("id"), resultSet.getString("name store"), resultSet.getString("town"));
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new IncorrectSQLInputException("Incorrect date", e);
         }
-        return store;
+    }
+
+    private Connection openConnection() {
+        try {
+            return DriverManager.getConnection(URL, LOGIN, PASSWORD);
+        } catch (SQLException e) {
+            throw new IncorrectSQLInputException("Incorrect date", e);
+        }
     }
 }

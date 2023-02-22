@@ -1,5 +1,6 @@
 package org.example.repository;
 
+import org.example.exception.IncorrectSQLInputException;
 import org.example.modal.Employee;
 import org.example.modal.Store;
 
@@ -12,32 +13,22 @@ public class EmployeeDatabaseRepository {
     private static final String PASSWORD = "HaZhlkZEd1wolFs";
     private static final String DELETE_FROM_DB = "DELETE FROM employee WHERE employee.id = ?";
     private static final String INSERT = "INSERT INTO employee(store, `first name`, `last name`, position, salary) VALUES (?,?,?,?,?)";
-    private static final String SELECT_SALARY = "SELECT salary FROM employee";
     private static final String SELECT = "SELECT * FROM employee JOIN store ON employee.store = store.id  WHERE employee.id = ?";
-    private final Connection connection;
-
-    {
-        try {
-            connection = DriverManager.getConnection(URL, LOGIN, PASSWORD);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
+    private static final String SELECT_ALL_EMPLOYEE = "SELECT * FROM employee JOIN store ON employee.store = store.id";
 
     /**
      * @param employee which is needed to insert to DB
      */
-    public void insert(Employee employee) {
-        try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT)) {
+    public void add(Employee employee) {
+        try (PreparedStatement preparedStatement = openConnection().prepareStatement(INSERT)) {
             preparedStatement.setInt(1, employee.getStore().getId());
             preparedStatement.setString(2, employee.getFirstName());
             preparedStatement.setString(3, employee.getLastName());
             preparedStatement.setString(4, employee.getPosition());
             preparedStatement.setInt(5, employee.getSalary());
             preparedStatement.execute();
-            connection.close();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new IncorrectSQLInputException("Incorrect date", e);
         }
     }
 
@@ -45,54 +36,61 @@ public class EmployeeDatabaseRepository {
      * @param id which is needed to find
      * @return found object.
      */
-    public Employee select(int id) {
-        Employee employee = null;
-        Store store;
-        try (PreparedStatement statement = connection.prepareStatement(SELECT)) {
+    public Employee load(int id) {
+        try (PreparedStatement statement = openConnection().prepareStatement(SELECT)) {
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
-            while (resultSet.next()) {
-                employee = new Employee(resultSet.getString(3),
-                        resultSet.getString(4), resultSet.getString(5),
-                        resultSet.getInt(6),
-                        store = new Store(resultSet.getString(7), resultSet.getString(8)));
-                store.setId(resultSet.getInt(2));
-                employee.setId(resultSet.getInt(1));
-            }
-            connection.close();
+            return loadEmployee(resultSet);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new IncorrectSQLInputException("Incorrect date", e);
         }
-        return employee;
     }
 
     /**
      * @param id which is needed to delete
      * @return either success or not.
      */
-    public boolean delete(int id) {
-        try (PreparedStatement statement = connection.prepareStatement(DELETE_FROM_DB)) {
+    public boolean remove(int id) {
+        try (PreparedStatement statement = openConnection().prepareStatement(DELETE_FROM_DB)) {
             statement.setInt(1, id);
             return statement.execute();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new IncorrectSQLInputException("Incorrect date", e);
         }
     }
 
     /**
      * @return list with all salaries;
      */
-    public ArrayList<Integer> salary() {
-        ArrayList<Integer> salaries = new ArrayList<>();
-        try (Statement statement = connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery(SELECT_SALARY);
+    public ArrayList<Employee> loadAllEmployees() {
+        ArrayList<Employee> employees = new ArrayList<>();
+        try (Statement statement = openConnection().createStatement()) {
+            ResultSet resultSet = statement.executeQuery(SELECT_ALL_EMPLOYEE);
             while (resultSet.next()) {
-                salaries.add(resultSet.getInt(1));
+                employees.add(loadEmployee(resultSet));
             }
-            connection.close();
+        } catch (SQLException e) {
+            throw new IncorrectSQLInputException("Incorrect date", e);
+        }
+        return employees;
+    }
+
+    private Employee loadEmployee(ResultSet resultSet) {
+        try {
+            return new Employee(resultSet.getInt("id"), resultSet.getString("first name"),
+                    resultSet.getString("last name"), resultSet.getString("position"),
+                    resultSet.getInt("salary"),
+                    new Store(resultSet.getInt("id"), resultSet.getString("name store"), resultSet.getString("town")));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return salaries;
+    }
+
+    private Connection openConnection() {
+        try {
+            return DriverManager.getConnection(URL, LOGIN, PASSWORD);
+        } catch (SQLException e) {
+            throw new IncorrectSQLInputException("Incorrect date", e);
+        }
     }
 }

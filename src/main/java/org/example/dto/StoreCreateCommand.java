@@ -1,4 +1,4 @@
-package org.example.modal;
+package org.example.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;

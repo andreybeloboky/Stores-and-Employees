@@ -1,25 +1,23 @@
 package org.example.validator;
 
-import org.example.exception.NoSuchException;
+import org.example.exception.NoSuchEntityException;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class StoreNameValidator {
 
-    private static final String PATTERN_FIND_NAME = "HM\\d{3}";
+    private static final String NAME_PATTERN = "HM\\d{3}";
 
     /**
      * @param str - name of store.
      * @return true or exception.
      */
-    public boolean validate(String str) {
-        Pattern email = Pattern.compile(PATTERN_FIND_NAME);
-        Matcher checkEmail = email.matcher(str);
-        if (!checkEmail.matches()) {
-            throw new NoSuchException("Name " + str + " is incorrect");
-        } else {
-            return true;
+    public void validate(String str) {
+        Pattern name = Pattern.compile(NAME_PATTERN);
+        Matcher checkNameOfStore = name.matcher(str);
+        if (!checkNameOfStore.matches()) {
+            throw new NoSuchEntityException("Name " + str + " is incorrect");
         }
     }
 }
