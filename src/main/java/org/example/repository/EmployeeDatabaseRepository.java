@@ -20,6 +20,7 @@ public class EmployeeDatabaseRepository {
      * @param employee which is needed to insert to DB
      */
     public void add(Employee employee) {
+        System.getenv("LOGIN");
         try (var preparedStatement = openConnection().prepareStatement(INSERT)) {
             preparedStatement.setInt(1, employee.getStore().getId());
             preparedStatement.setString(2, employee.getFirstName());

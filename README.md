@@ -15,7 +15,7 @@ You can delete a store only if it does not have any employees
 There is also the possibility of total information on all PO from all stores.
 Attributes must be defined independently.
 
-Project: Maven, MySQL, JDBC
+Project: Maven, MySQL, JDBC, Lombok
 
 The user displays and adds data to JSON. (JSON will come to the input)
 
