@@ -18,7 +18,7 @@ public class StoreService implements StoreServiceImplementation {
      */
     public void add(StoreCreateCommand store) {
         storeNameValidator.validate(store.getNameOfStore());
-        Store storeOrigin = new Store(store.getTown(), store.getNameOfStore());
+        var storeOrigin = new Store(store.getTown(), store.getNameOfStore());
         storeDatabaseRepository.add(storeOrigin);
     }
 
@@ -36,7 +36,7 @@ public class StoreService implements StoreServiceImplementation {
      * @return object store
      */
     public Store getInfoFromIdStore(int id) {
-        Store store = storeDatabaseRepository.add(id);
+        var store = storeDatabaseRepository.add(id);
         if (store == null) {
             throw new NoSuchEntityException("There isn't such store id: " + id);
         } else {

@@ -17,7 +17,7 @@ public class StoreDatabaseRepository {
      * @param store which is needed to insert to db.
      */
     public void add(Store store) {
-        try (PreparedStatement preparedStatement = openConnection().prepareStatement(INSERT)) {
+        try (var preparedStatement = openConnection().prepareStatement(INSERT)) {
             preparedStatement.setString(1, store.getNameOfStore());
             preparedStatement.setString(2, store.getTown());
             preparedStatement.execute();
@@ -31,7 +31,7 @@ public class StoreDatabaseRepository {
      * @return boolean type to understand whether execute or not.
      */
     public boolean remove(int id) {
-        try (PreparedStatement statement = openConnection().prepareStatement(DELETE)) {
+        try (var statement = openConnection().prepareStatement(DELETE)) {
             statement.setInt(1, id);
             return statement.execute();
         } catch (SQLException e) {
@@ -44,9 +44,9 @@ public class StoreDatabaseRepository {
      * @return object store.
      */
     public Store add(int id) {
-        try (PreparedStatement statement = openConnection().prepareStatement(SELECT)) {
+        try (var statement = openConnection().prepareStatement(SELECT)) {
             statement.setInt(1, id);
-            ResultSet resultSet = statement.executeQuery();
+            var resultSet = statement.executeQuery();
             return new Store(resultSet.getInt("id"), resultSet.getString("name store"), resultSet.getString("town"));
         } catch (SQLException e) {
             throw new IncorrectSQLInputException("Incorrect date", e);

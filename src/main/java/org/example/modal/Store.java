@@ -1,7 +1,12 @@
 package org.example.modal;
 
-import java.util.Objects;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 
+@Getter
+@EqualsAndHashCode
+@ToString
 public class Store {
     private int id;
     private final String town;
@@ -16,40 +21,5 @@ public class Store {
         this.id = id;
         this.town = town;
         this.nameOfStore = nameOfStore;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public String getTown() {
-        return town;
-    }
-
-
-    public String getNameOfStore() {
-        return nameOfStore;
-    }
-
-    @Override
-    public String toString() {
-        return "Store{" +
-                "id=" + id +
-                ", town='" + town + '\'' +
-                ", nameOfStore='" + nameOfStore + '\'' +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Store store = (Store) o;
-        return id == store.id && Objects.equals(town, store.town) && Objects.equals(nameOfStore, store.nameOfStore);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, town, nameOfStore);
     }
 }

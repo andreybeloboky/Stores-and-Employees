@@ -20,7 +20,7 @@ public class EmployeeDatabaseRepository {
      * @param employee which is needed to insert to DB
      */
     public void add(Employee employee) {
-        try (PreparedStatement preparedStatement = openConnection().prepareStatement(INSERT)) {
+        try (var preparedStatement = openConnection().prepareStatement(INSERT)) {
             preparedStatement.setInt(1, employee.getStore().getId());
             preparedStatement.setString(2, employee.getFirstName());
             preparedStatement.setString(3, employee.getLastName());
@@ -37,7 +37,7 @@ public class EmployeeDatabaseRepository {
      * @return found object.
      */
     public Employee load(int id) {
-        try (PreparedStatement statement = openConnection().prepareStatement(SELECT)) {
+        try (var statement = openConnection().prepareStatement(SELECT)) {
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
             return loadEmployee(resultSet);
@@ -51,7 +51,7 @@ public class EmployeeDatabaseRepository {
      * @return either success or not.
      */
     public boolean remove(int id) {
-        try (PreparedStatement statement = openConnection().prepareStatement(DELETE_FROM_DB)) {
+        try (var statement = openConnection().prepareStatement(DELETE_FROM_DB)) {
             statement.setInt(1, id);
             return statement.execute();
         } catch (SQLException e) {
@@ -63,9 +63,9 @@ public class EmployeeDatabaseRepository {
      * @return list with all salaries;
      */
     public ArrayList<Employee> loadAllEmployees() {
-        ArrayList<Employee> employees = new ArrayList<>();
+        var employees = new ArrayList<Employee>();
         try (Statement statement = openConnection().createStatement()) {
-            ResultSet resultSet = statement.executeQuery(SELECT_ALL_EMPLOYEE);
+            var resultSet = statement.executeQuery(SELECT_ALL_EMPLOYEE);
             while (resultSet.next()) {
                 employees.add(loadEmployee(resultSet));
             }

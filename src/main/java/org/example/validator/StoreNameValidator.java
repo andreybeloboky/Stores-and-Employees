@@ -2,7 +2,6 @@ package org.example.validator;
 
 import org.example.exception.NoSuchEntityException;
 
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class StoreNameValidator {
@@ -11,11 +10,10 @@ public class StoreNameValidator {
 
     /**
      * @param str - name of store.
-     * @return true or exception.
      */
     public void validate(String str) {
-        Pattern name = Pattern.compile(NAME_PATTERN);
-        Matcher checkNameOfStore = name.matcher(str);
+        var name = Pattern.compile(NAME_PATTERN);
+        var checkNameOfStore = name.matcher(str);
         if (!checkNameOfStore.matches()) {
             throw new NoSuchEntityException("Name " + str + " is incorrect");
         }
