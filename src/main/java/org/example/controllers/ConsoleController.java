@@ -2,7 +2,7 @@ package org.example.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.extern.java.Log;
+import io.github.cdimascio.dotenv.Dotenv;
 import lombok.extern.slf4j.Slf4j;
 import org.example.exception.NoSuchEntityException;
 import org.example.modal.Employee;
@@ -11,7 +11,6 @@ import org.example.dto.EmployeeCreateCommand;
 import org.example.dto.StoreCreateCommand;
 import org.example.service.EmployeeService;
 import org.example.service.StoreService;
-import org.slf4j.*;
 
 import java.util.Scanner;
 

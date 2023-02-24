@@ -6,9 +6,6 @@ import org.example.modal.Store;
 import java.sql.*;
 
 public class StoreDatabaseRepository {
-    private static final String URL = "jdbc:mysql://localhost:3306/employee";
-    private static final String LOGIN = "root";
-    private static final String PASSWORD = "HaZhlkZEd1wolFs";
     private static final String INSERT = "INSERT INTO store(`name store`, `town`) VALUES (?,?)";
     private static final String DELETE = "DELETE FROM store WHERE store.id = ?";
     private static final String SELECT = "SELECT * FROM store WHERE store.id = ?";
@@ -55,7 +52,10 @@ public class StoreDatabaseRepository {
 
     private Connection openConnection() {
         try {
-            return DriverManager.getConnection(URL, LOGIN, PASSWORD);
+            String login = "root";
+            String password = System.getenv(login);
+            String URL = System.getenv("URLTaskShop");
+            return DriverManager.getConnection(URL, login, password);
         } catch (SQLException e) {
             throw new IncorrectSQLInputException("Incorrect date", e);
         }

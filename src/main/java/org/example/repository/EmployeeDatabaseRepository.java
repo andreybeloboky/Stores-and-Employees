@@ -8,9 +8,6 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class EmployeeDatabaseRepository {
-    private static final String URL = "jdbc:mysql://localhost:3306/employee";
-    private static final String LOGIN = "root";
-    private static final String PASSWORD = "HaZhlkZEd1wolFs";
     private static final String DELETE_FROM_DB = "DELETE FROM employee WHERE employee.id = ?";
     private static final String INSERT = "INSERT INTO employee(store, `first name`, `last name`, position, salary) VALUES (?,?,?,?,?)";
     private static final String SELECT = "SELECT * FROM employee JOIN store ON employee.store = store.id  WHERE employee.id = ?";
@@ -20,7 +17,6 @@ public class EmployeeDatabaseRepository {
      * @param employee which is needed to insert to DB
      */
     public void add(Employee employee) {
-        System.getenv("LOGIN");
         try (var preparedStatement = openConnection().prepareStatement(INSERT)) {
             preparedStatement.setInt(1, employee.getStore().getId());
             preparedStatement.setString(2, employee.getFirstName());
@@ -89,7 +85,10 @@ public class EmployeeDatabaseRepository {
 
     private Connection openConnection() {
         try {
-            return DriverManager.getConnection(URL, LOGIN, PASSWORD);
+            String login = "root";
+            String password = System.getenv(login);
+            String URL = System.getenv("URLTaskShop");
+            return DriverManager.getConnection(URL, login, password);
         } catch (SQLException e) {
             throw new IncorrectSQLInputException("Incorrect date", e);
         }
