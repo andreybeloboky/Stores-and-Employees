@@ -7,7 +7,6 @@ import org.example.dto.EmployeeCreateCommand;
 import org.example.repository.EmployeeDatabaseRepository;
 
 import java.util.IntSummaryStatistics;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class EmployeeService implements EmployeeServiceImplementation {
