@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public class EmployeeDatabaseRepository {
     private static final String DELETE_FROM_DB = "DELETE FROM employee WHERE employee.id = ?";
-    private static final String INSERT = "INSERT INTO employee(store, `first_name`, `last_name`, position, salary) VALUES (?,?,?,?,?)";
+    private static final String INSERT = "INSERT INTO employee(store, `first name`, `last name`, position, salary) VALUES (?,?,?,?,?)";
     private static final String SELECT = "SELECT * FROM employee JOIN store ON employee.store = store.id  WHERE employee.id = ?";
     private static final String SELECT_ALL_EMPLOYEE = "SELECT * FROM employee JOIN store ON employee.store = store.id";
     private static final String LOGIN = System.getenv("mySQLLoginShop");
@@ -41,8 +41,7 @@ public class EmployeeDatabaseRepository {
     public Employee load(int id) {
         try (final var statement = openConnection().prepareStatement(SELECT)) {
             statement.setInt(1, id);
-            ResultSet resultSet = statement.executeQuery();
-            var employee = Optional.of(loadEmployee(resultSet));
+            var employee = Optional.of(loadEmployee(statement.executeQuery()));
             return employee.orElseThrow(() -> new NoSuchEntityException("There isn't such employee id: " + id));
         } catch (SQLException e) {
             throw new IncorrectSQLInputException("Impossible loading", e);
@@ -53,10 +52,10 @@ public class EmployeeDatabaseRepository {
      * @param id which is needed to delete
      * @return either success or not.
      */
-    public boolean remove(int id) {
-        try (final var statement = openConnection().prepareStatement(DELETE_FROM_DB)) {
+    public int remove(int id) {
+        try (var statement = openConnection().prepareStatement(DELETE_FROM_DB)) {
             statement.setInt(1, id);
-            return statement.execute();
+            return statement.executeUpdate();
         } catch (SQLException e) {
             throw new IncorrectSQLInputException("Impossible deleting", e);
         }
@@ -78,15 +77,13 @@ public class EmployeeDatabaseRepository {
         return employees;
     }
 
-    private Employee loadEmployee(ResultSet resultSet) {
-        try {
-            return new Employee(resultSet.getInt("id"), resultSet.getString("first name"),
-                    resultSet.getString("last name"), resultSet.getString("position"),
-                    resultSet.getInt("salary"),
-                    new Store(resultSet.getInt("id"), resultSet.getString("name store"), resultSet.getString("town")));
-        } catch (SQLException e) {
-            throw new IncorrectSQLInputException("There isn't such an employee", e);
-        }
+    private Employee loadEmployee(ResultSet resultSet) throws SQLException {
+        resultSet.next();
+        return new Employee(resultSet.getInt("id"), resultSet.getString("first name"),
+                resultSet.getString("last name"), resultSet.getString("position"),
+                resultSet.getInt("salary"),
+                new Store(resultSet.getInt("id"), resultSet.getString("name store"), resultSet.getString("town")));
+
     }
 
     private Connection openConnection() {

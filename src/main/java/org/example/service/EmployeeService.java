@@ -17,8 +17,8 @@ public class EmployeeService implements EmployeeServiceImplementation {
      * @param id - get id from user.
      */
     public void deleteEmployee(int id) {
-        if (!employeeDatabaseRepository.remove(id)) {
-            throw new NoSuchEntityException("There isn't such a employee id:" + id);
+        if(employeeDatabaseRepository.remove(id) == 0){
+            throw new NoSuchEntityException("There is not such a employee");
         }
     }
 

@@ -26,7 +26,7 @@ public class StoreService implements StoreServiceImplementation {
      * @param id which is needed to delete
      */
     public void remove(int id) {
-        if (!storeDatabaseRepository.remove(id)) {
+        if (storeDatabaseRepository.remove(id) == 0) {
             throw new NoSuchEntityException("There isn't such a id store: " + id);
         }
     }

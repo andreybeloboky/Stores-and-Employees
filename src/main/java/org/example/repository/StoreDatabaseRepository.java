@@ -24,7 +24,7 @@ public class StoreDatabaseRepository {
             preparedStatement.setString(2, store.getTown());
             preparedStatement.execute();
         } catch (SQLException e) {
-            throw new IncorrectSQLInputException("There isn't store in list of database", e);
+            throw new IncorrectSQLInputException("Impossible connect with database", e);
         }
     }
 
@@ -32,12 +32,12 @@ public class StoreDatabaseRepository {
      * @param id which is needed to delete
      * @return boolean type to understand whether execute or not.
      */
-    public boolean remove(int id) {
+    public int remove(int id) {
         try (final var statement = openConnection().prepareStatement(DELETE)) {
             statement.setInt(1, id);
-            return statement.execute();
+            return statement.executeUpdate();
         } catch (SQLException e) {
-            throw new IncorrectSQLInputException("There isn't store in list of database", e);
+            throw new IncorrectSQLInputException("Impossible connect with database", e);
         }
     }
 
@@ -49,10 +49,11 @@ public class StoreDatabaseRepository {
         try (final var statement = openConnection().prepareStatement(SELECT)) {
             statement.setInt(1, id);
             var resultSet = statement.executeQuery();
+            resultSet.next();
             var store = Optional.of(new Store(resultSet.getInt("id"), resultSet.getString("name store"), resultSet.getString("town")));
             return store.orElseThrow(() -> new NoSuchEntityException("There isn't such store id: " + id));
         } catch (SQLException e) {
-            throw new IncorrectSQLInputException("There isn't such an store", e);
+            throw new IncorrectSQLInputException("Impossible connect with database", e);
         }
     }
 
