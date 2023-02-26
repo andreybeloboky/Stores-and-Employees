@@ -28,13 +28,7 @@ public class EmployeeService implements EmployeeServiceImplementation {
      * @return employee object
      */
     public Employee getInfoFromIdEmployee(int id) {
-        var employee = employeeDatabaseRepository.load(id);
-        var employeeOptional = Optional.ofNullable(employee);
-        if (employeeOptional.isEmpty()) {
-           throw new NoSuchEntityException("There isn't such employee id: " + id);
-        } else {
-            return employee;
-        }
+        return employeeDatabaseRepository.load(id);
     }
 
     /**

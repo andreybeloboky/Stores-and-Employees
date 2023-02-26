@@ -36,11 +36,6 @@ public class StoreService implements StoreServiceImplementation {
      * @return object store
      */
     public Store getInfoFromIdStore(int id) {
-        var store = storeDatabaseRepository.add(id);
-        if (store == null) {
-            throw new NoSuchEntityException("There isn't such store id: " + id);
-        } else {
-            return store;
-        }
+        return storeDatabaseRepository.getById(id);
     }
 }
