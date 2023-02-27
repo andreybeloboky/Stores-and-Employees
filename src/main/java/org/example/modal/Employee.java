@@ -2,9 +2,7 @@ package org.example.modal;
 
 import lombok.*;
 
-@Getter
-@EqualsAndHashCode
-@ToString
+@Data
 @AllArgsConstructor
 @RequiredArgsConstructor
 public class Employee {

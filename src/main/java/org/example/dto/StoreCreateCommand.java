@@ -2,12 +2,10 @@ package org.example.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.Data;
 
 @JsonPropertyOrder({"town", "nameOfStore"})
-@Getter
-@EqualsAndHashCode
+@Data
 public class StoreCreateCommand {
     @JsonProperty("town")
     private String town;

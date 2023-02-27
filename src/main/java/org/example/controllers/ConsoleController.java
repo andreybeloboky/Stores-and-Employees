@@ -44,20 +44,20 @@ public class ConsoleController {
                     case 1 -> {
                         System.out.println("Enter JSON string");
                         var exampleOfJSON = scanner.next();
-                        var employee = controller.getEmployeeObject(exampleOfJSON);
-                        log.info("Get employee object {} and send it to save method to DB", employee);
+                        var employee = controller.convertEmployeeObject(exampleOfJSON);
+                        log.info("Convert employee object {} and send it to save method to DB", employee);
                         employeeService.save(employee);
                     }
                     case 2 -> {
                         System.out.println("What's id you want to delete?");
                         var id = scanner.nextInt();
-                        log.info("Get id and send it to delete method {}", id);
+                        log.info("Load id and send it to delete method {}", id);
                         employeeService.deleteEmployee(id);
                     }
                     case 3 -> {
                         System.out.println("What's id you want to get?");
                         var id = scanner.nextInt();
-                        log.info("Get id {} and send it so that will get inform by id method", id);
+                        log.info("Load id {} and send it so that will get inform by id method", id);
                         var emp = employeeService.loadInfoFromIdEmployee(id);
                         System.out.println(emp.toString());
                     }
@@ -68,7 +68,7 @@ public class ConsoleController {
                         System.out.println("Town where this store is located");
                         var json = scanner.next();
                         var store = controller.getStoreObject(json);
-                        log.info("Get store object {} and send it to add method to DB", store);
+                        log.info("Load store object {} and send it to add method to DB", store);
                         storeService.add(store);
                     }
                     case 5 -> {
@@ -104,7 +104,7 @@ public class ConsoleController {
      * @return employee object from json format.
      */
     @SneakyThrows
-    private EmployeeCreateCommand getEmployeeObject(String json) {
+    private EmployeeCreateCommand convertEmployeeObject(String json) {
         var objectMapper = new ObjectMapper();
         return objectMapper.readValue(json, EmployeeCreateCommand.class);
     }

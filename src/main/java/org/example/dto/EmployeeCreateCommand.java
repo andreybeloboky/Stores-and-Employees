@@ -1,11 +1,9 @@
 package org.example.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.*;
 
-@Getter
-@EqualsAndHashCode
+@Data
 public class EmployeeCreateCommand {
     @JsonProperty("firstName")
     private String firstName;
