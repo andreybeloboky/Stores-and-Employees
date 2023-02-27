@@ -39,7 +39,6 @@ public class StoreService implements StoreServiceImplementation {
      * @return object store
      */
     public Store getInfoFromIdStore(int id) {
-        log.info("The store has been found");
-        return storeDatabaseRepository.getById(id);
+        return storeDatabaseRepository.loadById(id).orElseThrow(() -> new NoSuchEntityException("There isn't such store id: " + id));
     }
 }

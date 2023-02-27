@@ -8,9 +8,9 @@ import java.util.IntSummaryStatistics;
 public interface EmployeeServiceImplementation {
     void deleteEmployee(int id);
 
-    Employee getInfoFromIdEmployee(int id);
+    Employee loadInfoFromIdEmployee(int id);
 
     void save(EmployeeCreateCommand createCommand);
 
-    IntSummaryStatistics getAllSalaryOfEmployees();
+    IntSummaryStatistics loadAllSalaryOfEmployees();
 }

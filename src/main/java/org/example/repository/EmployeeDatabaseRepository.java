@@ -8,6 +8,7 @@ import org.example.modal.Store;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Optional;
 
 @Slf4j
 public class EmployeeDatabaseRepository {
@@ -41,16 +42,16 @@ public class EmployeeDatabaseRepository {
      * @param id which is needed to find
      * @return found object.
      */
-    public Employee load(int id) {
+    public Optional<Employee> load(int id) {
         try (final var statement = openConnection().prepareStatement(SELECT)) {
             log.info("Success connection");
             statement.setInt(1, id);
             var resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 log.info("Getting employee object, if we get empty object, we will get NoSuchEntityException");
-                return loadEmployee(resultSet);
+                return Optional.of(loadEmployee(resultSet));
             } else {
-                throw new NoSuchEntityException("There isn't such employee id: " + id);
+                return Optional.empty();
             }
         } catch (SQLException e) {
             throw new IncorrectSQLInputException("Impossible loading", e);

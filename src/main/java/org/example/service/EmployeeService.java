@@ -9,6 +9,7 @@ import org.example.repository.EmployeeDatabaseRepository;
 
 import java.util.IntSummaryStatistics;
 import java.util.stream.Collectors;
+
 @Slf4j
 public class EmployeeService implements EmployeeServiceImplementation {
     private final EmployeeDatabaseRepository employeeDatabaseRepository = new EmployeeDatabaseRepository();
@@ -18,7 +19,7 @@ public class EmployeeService implements EmployeeServiceImplementation {
      * @param id - get id from user.
      */
     public void deleteEmployee(int id) {
-        if(employeeDatabaseRepository.remove(id) == 0){
+        if (employeeDatabaseRepository.remove(id) == 0) {
             throw new NoSuchEntityException("There is not such a employee");
         }
         log.info("The employee has been deleted");
@@ -28,8 +29,8 @@ public class EmployeeService implements EmployeeServiceImplementation {
      * @param id which need to got from user.
      * @return employee object
      */
-    public Employee getInfoFromIdEmployee(int id) {
-        return employeeDatabaseRepository.load(id);
+    public Employee loadInfoFromIdEmployee(int id) {
+        return employeeDatabaseRepository.load(id).orElseThrow(() -> new NoSuchEntityException("There isn't such employee id: " + id));
     }
 
     /**
@@ -46,7 +47,7 @@ public class EmployeeService implements EmployeeServiceImplementation {
     /**
      * @return summa of all employees
      */
-    public IntSummaryStatistics getAllSalaryOfEmployees() {
+    public IntSummaryStatistics loadAllSalaryOfEmployees() {
         var employees = employeeDatabaseRepository.loadAllEmployees();
         return employees.stream().collect(Collectors.summarizingInt(Employee::getSalary));
     }
