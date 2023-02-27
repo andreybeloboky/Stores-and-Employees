@@ -9,6 +9,6 @@ import lombok.*;
 @RequiredArgsConstructor
 public class Store {
     private int id;
-    @NonNull private final String town;
-    @NonNull private final String nameOfStore;
+    private final String town;
+    private final String nameOfStore;
 }

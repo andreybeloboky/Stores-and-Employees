@@ -8,7 +8,6 @@ import org.example.modal.Store;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Optional;
 
 @Slf4j
 public class EmployeeDatabaseRepository {
@@ -32,7 +31,7 @@ public class EmployeeDatabaseRepository {
             preparedStatement.setString(4, employee.getPosition());
             preparedStatement.setInt(5, employee.getSalary());
             preparedStatement.execute();
-            log.info("Adding of employee to database successfully");
+            log.info("Adding of employee to database successfully" + employee);
         } catch (SQLException e) {
             throw new IncorrectSQLInputException("Impossible adding", e);
         }
@@ -47,10 +46,12 @@ public class EmployeeDatabaseRepository {
             log.info("Success connection");
             statement.setInt(1, id);
             var resultSet = statement.executeQuery();
-            resultSet.next();
-            var employee = Optional.of(loadEmployee(resultSet));
-            log.info("Getting employee object, if we get empty object, we will get NoSuchEntityException");
-            return employee.orElseThrow(() -> new NoSuchEntityException("There isn't such employee id: " + id));
+            if (resultSet.next()) {
+                log.info("Getting employee object, if we get empty object, we will get NoSuchEntityException");
+                return loadEmployee(resultSet);
+            } else {
+                throw new NoSuchEntityException("There isn't such employee id: " + id);
+            }
         } catch (SQLException e) {
             throw new IncorrectSQLInputException("Impossible loading", e);
         }

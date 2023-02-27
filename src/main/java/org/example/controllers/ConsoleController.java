@@ -45,13 +45,13 @@ public class ConsoleController {
                         System.out.println("Enter JSON string");
                         var exampleOfJSON = scanner.next();
                         var employee = controller.getEmployeeObject(exampleOfJSON);
-                        log.info("Get employee object and send it to save method to DB");
+                        log.info("Get employee " + employee + " object and send it to save method to DB");
                         employeeService.save(employee);
                     }
                     case 2 -> {
                         System.out.println("What's id you want to delete?");
                         var id = scanner.nextInt();
-                        log.info("Get id and send it to delete method");
+                        log.info("Get id and send it to delete method " + id);
                         employeeService.deleteEmployee(id);
                     }
                     case 3 -> {
@@ -68,24 +68,24 @@ public class ConsoleController {
                         System.out.println("Town where this store is located");
                         var json = scanner.next();
                         var store = controller.getStoreObject(json);
-                        log.info("Get store object and send it to add method to DB");
+                        log.info("Get store object " + store + " and send it to add method to DB");
                         storeService.add(store);
                     }
                     case 5 -> {
                         System.out.println("What's id you want to delete?");
                         var id = scanner.nextInt();
-                        log.info("Get id and send it to delete method");
+                        log.info("Get id and send it to delete method " + id);
                         storeService.remove(id);
                     }
                     case 6 -> {
                         System.out.println("What's id you want to get?");
                         var id = scanner.nextInt();
-                        log.info("Get id and send it so that will get inform by id method");
+                        log.info("Get id " + id + " and send it so that will get inform by id method");
                         Store store = storeService.getInfoFromIdStore(id);
                         System.out.println(store);
                     }
                     case 7 -> {
-                        log.info("The salary has been calculated");
+                        log.info("The salaries of everyone's employees have been calculated");
                         System.out.println(employeeService.getAllSalaryOfEmployees().getSum());
                     }
 

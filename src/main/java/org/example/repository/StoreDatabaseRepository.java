@@ -6,7 +6,7 @@ import org.example.exception.NoSuchEntityException;
 import org.example.modal.Store;
 
 import java.sql.*;
-import java.util.Optional;
+
 @Slf4j
 public class StoreDatabaseRepository {
     private static final String INSERT = "INSERT INTO store(`name store`, `town`) VALUES (?,?)";
@@ -49,15 +49,18 @@ public class StoreDatabaseRepository {
      * @param id which is needed to get
      * @return object store.
      */
+
     public Store getById(int id) {
         try (final var statement = openConnection().prepareStatement(SELECT)) {
             log.info("Success connection");
             statement.setInt(1, id);
             var resultSet = statement.executeQuery();
-            resultSet.next();
-            var store = Optional.of(new Store(resultSet.getInt("id"), resultSet.getString("name store"), resultSet.getString("town")));
-            log.info("Getting store object, if we get empty object, we will get NoSuchEntityException");
-            return store.orElseThrow(() -> new NoSuchEntityException("There isn't such store id: " + id));
+            if (resultSet.next()) {
+                log.info("Getting store object, if we get empty object, we will get NoSuchEntityException");
+                return new Store(resultSet.getInt("id"), resultSet.getString("name store"), resultSet.getString("town"));
+            }else{
+                throw new NoSuchEntityException("There isn't such store id: " + id);
+            }
         } catch (SQLException e) {
             throw new IncorrectSQLInputException("Impossible connect with database", e);
         }
