@@ -1,5 +1,6 @@
 package org.example.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.example.exception.NoSuchEntityException;
 import org.example.interfaces.StoreServiceImplementation;
 import org.example.modal.Store;
@@ -7,7 +8,7 @@ import org.example.dto.StoreCreateCommand;
 import org.example.repository.StoreDatabaseRepository;
 import org.example.validator.StoreNameValidator;
 
-
+@Slf4j
 public class StoreService implements StoreServiceImplementation {
 
     private final StoreDatabaseRepository storeDatabaseRepository = new StoreDatabaseRepository();
@@ -20,6 +21,7 @@ public class StoreService implements StoreServiceImplementation {
         storeNameValidator.validate(store.getNameOfStore());
         var storeOrigin = new Store(store.getTown(), store.getNameOfStore());
         storeDatabaseRepository.add(storeOrigin);
+        log.info("The store has been saved");
     }
 
     /**
@@ -29,6 +31,7 @@ public class StoreService implements StoreServiceImplementation {
         if (storeDatabaseRepository.remove(id) == 0) {
             throw new NoSuchEntityException("There isn't such a id store: " + id);
         }
+        log.info("The store has been deleted");
     }
 
     /**
@@ -36,6 +39,7 @@ public class StoreService implements StoreServiceImplementation {
      * @return object store
      */
     public Store getInfoFromIdStore(int id) {
+        log.info("The store has been found");
         return storeDatabaseRepository.getById(id);
     }
 }

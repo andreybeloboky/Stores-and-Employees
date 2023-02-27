@@ -1,5 +1,6 @@
 package org.example.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.example.exception.NoSuchEntityException;
 import org.example.interfaces.EmployeeServiceImplementation;
 import org.example.modal.Employee;
@@ -8,7 +9,7 @@ import org.example.repository.EmployeeDatabaseRepository;
 
 import java.util.IntSummaryStatistics;
 import java.util.stream.Collectors;
-
+@Slf4j
 public class EmployeeService implements EmployeeServiceImplementation {
     private final EmployeeDatabaseRepository employeeDatabaseRepository = new EmployeeDatabaseRepository();
     private final StoreService storeService = new StoreService();
@@ -20,6 +21,7 @@ public class EmployeeService implements EmployeeServiceImplementation {
         if(employeeDatabaseRepository.remove(id) == 0){
             throw new NoSuchEntityException("There is not such a employee");
         }
+        log.info("The employee has been deleted");
     }
 
     /**
@@ -38,6 +40,7 @@ public class EmployeeService implements EmployeeServiceImplementation {
         var employee = new Employee(createCommand.getFirstName(), createCommand.getLastName(),
                 createCommand.getPosition(), createCommand.getSalary(), store);
         employeeDatabaseRepository.add(employee);
+        log.info("The employee has been saved");
     }
 
     /**

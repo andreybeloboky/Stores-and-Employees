@@ -1,12 +1,13 @@
 package org.example.repository;
 
+import lombok.extern.slf4j.Slf4j;
 import org.example.exception.IncorrectSQLInputException;
 import org.example.exception.NoSuchEntityException;
 import org.example.modal.Store;
 
 import java.sql.*;
 import java.util.Optional;
-
+@Slf4j
 public class StoreDatabaseRepository {
     private static final String INSERT = "INSERT INTO store(`name store`, `town`) VALUES (?,?)";
     private static final String DELETE = "DELETE FROM store WHERE store.id = ?";
@@ -20,9 +21,11 @@ public class StoreDatabaseRepository {
      */
     public void add(Store store) {
         try (final var preparedStatement = openConnection().prepareStatement(INSERT)) {
+            log.info("Success connection");
             preparedStatement.setString(1, store.getNameOfStore());
             preparedStatement.setString(2, store.getTown());
             preparedStatement.execute();
+            log.info("Adding of store to database successfully");
         } catch (SQLException e) {
             throw new IncorrectSQLInputException("Impossible connect with database", e);
         }
@@ -34,6 +37,7 @@ public class StoreDatabaseRepository {
      */
     public int remove(int id) {
         try (final var statement = openConnection().prepareStatement(DELETE)) {
+            log.info("Success connection");
             statement.setInt(1, id);
             return statement.executeUpdate();
         } catch (SQLException e) {
@@ -47,10 +51,12 @@ public class StoreDatabaseRepository {
      */
     public Store getById(int id) {
         try (final var statement = openConnection().prepareStatement(SELECT)) {
+            log.info("Success connection");
             statement.setInt(1, id);
             var resultSet = statement.executeQuery();
             resultSet.next();
             var store = Optional.of(new Store(resultSet.getInt("id"), resultSet.getString("name store"), resultSet.getString("town")));
+            log.info("Getting store object, if we get empty object, we will get NoSuchEntityException");
             return store.orElseThrow(() -> new NoSuchEntityException("There isn't such store id: " + id));
         } catch (SQLException e) {
             throw new IncorrectSQLInputException("Impossible connect with database", e);

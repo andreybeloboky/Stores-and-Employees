@@ -1,5 +1,6 @@
 package org.example.repository;
 
+import lombok.extern.slf4j.Slf4j;
 import org.example.exception.IncorrectSQLInputException;
 import org.example.exception.NoSuchEntityException;
 import org.example.modal.Employee;
@@ -9,6 +10,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Optional;
 
+@Slf4j
 public class EmployeeDatabaseRepository {
     private static final String DELETE_FROM_DB = "DELETE FROM employee WHERE employee.id = ?";
     private static final String INSERT = "INSERT INTO employee(store, `first name`, `last name`, position, salary) VALUES (?,?,?,?,?)";
@@ -23,12 +25,14 @@ public class EmployeeDatabaseRepository {
      */
     public void add(Employee employee) {
         try (final var preparedStatement = openConnection().prepareStatement(INSERT)) {
+            log.info("Success connection");
             preparedStatement.setInt(1, employee.getStore().getId());
             preparedStatement.setString(2, employee.getFirstName());
             preparedStatement.setString(3, employee.getLastName());
             preparedStatement.setString(4, employee.getPosition());
             preparedStatement.setInt(5, employee.getSalary());
             preparedStatement.execute();
+            log.info("Adding of employee to database successfully");
         } catch (SQLException e) {
             throw new IncorrectSQLInputException("Impossible adding", e);
         }
@@ -40,8 +44,12 @@ public class EmployeeDatabaseRepository {
      */
     public Employee load(int id) {
         try (final var statement = openConnection().prepareStatement(SELECT)) {
+            log.info("Success connection");
             statement.setInt(1, id);
-            var employee = Optional.of(loadEmployee(statement.executeQuery()));
+            var resultSet = statement.executeQuery();
+            resultSet.next();
+            var employee = Optional.of(loadEmployee(resultSet));
+            log.info("Getting employee object, if we get empty object, we will get NoSuchEntityException");
             return employee.orElseThrow(() -> new NoSuchEntityException("There isn't such employee id: " + id));
         } catch (SQLException e) {
             throw new IncorrectSQLInputException("Impossible loading", e);
@@ -54,6 +62,7 @@ public class EmployeeDatabaseRepository {
      */
     public int remove(int id) {
         try (var statement = openConnection().prepareStatement(DELETE_FROM_DB)) {
+            log.info("Success connection");
             statement.setInt(1, id);
             return statement.executeUpdate();
         } catch (SQLException e) {
@@ -67,6 +76,7 @@ public class EmployeeDatabaseRepository {
     public ArrayList<Employee> loadAllEmployees() {
         var employees = new ArrayList<Employee>();
         try (final var statement = openConnection().createStatement()) {
+            log.info("Success connection");
             var resultSet = statement.executeQuery(SELECT_ALL_EMPLOYEE);
             while (resultSet.next()) {
                 employees.add(loadEmployee(resultSet));
@@ -74,11 +84,11 @@ public class EmployeeDatabaseRepository {
         } catch (SQLException e) {
             throw new IncorrectSQLInputException("Something wrong with loading data from employee", e);
         }
+        log.info("Return list of employees");
         return employees;
     }
 
     private Employee loadEmployee(ResultSet resultSet) throws SQLException {
-        resultSet.next();
         return new Employee(resultSet.getInt("id"), resultSet.getString("first name"),
                 resultSet.getString("last name"), resultSet.getString("position"),
                 resultSet.getInt("salary"),

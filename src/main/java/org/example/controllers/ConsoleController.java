@@ -84,7 +84,10 @@ public class ConsoleController {
                         Store store = storeService.getInfoFromIdStore(id);
                         System.out.println(store);
                     }
-                    case 7 -> System.out.println(employeeService.getAllSalaryOfEmployees().getSum());
+                    case 7 -> {
+                        log.info("The salary has been calculated");
+                        System.out.println(employeeService.getAllSalaryOfEmployees().getSum());
+                    }
 
                 }
             } else if (tap == 2) {
