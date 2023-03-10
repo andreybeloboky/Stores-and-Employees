@@ -19,9 +19,9 @@ public class StoreService implements StoreServiceImplementation {
      */
     public void add(StoreCreateCommand store) {
         storeNameValidator.validate(store.getNameOfStore());
-        var storeOrigin = new Store(store.getTown(), store.getNameOfStore());
+        final var storeOrigin = new Store(store.getTown(), store.getNameOfStore());
         storeDatabaseRepository.add(storeOrigin);
-        log.info("The store has been saved");
+        log.info("The store has been saved {}", store);
     }
 
     /**
@@ -31,7 +31,7 @@ public class StoreService implements StoreServiceImplementation {
         if (storeDatabaseRepository.remove(id) == 0) {
             throw new NoSuchEntityException("There isn't such a id store: " + id);
         }
-        log.info("The store has been deleted");
+        log.info("The store has been deleted id: {}", id);
     }
 
     /**

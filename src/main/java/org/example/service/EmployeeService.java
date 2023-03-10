@@ -19,10 +19,10 @@ public class EmployeeService implements EmployeeServiceImplementation {
      * @param id - get id from user.
      */
     public void deleteEmployee(int id) {
-        if (employeeDatabaseRepository.remove(id) == 0) {
+        if (!employeeDatabaseRepository.remove(id)) {
             throw new NoSuchEntityException("There is not such a employee");
         }
-        log.info("The employee has been deleted");
+        log.info("Delete id and send it to delete method {}", id);
     }
 
     /**
@@ -30,6 +30,7 @@ public class EmployeeService implements EmployeeServiceImplementation {
      * @return employee object
      */
     public Employee loadInfoFromIdEmployee(int id) {
+        log.info("Getting employee object id: {}, if we get empty object, we will get NoSuchEntityException", id);
         return employeeDatabaseRepository.load(id).orElseThrow(() -> new NoSuchEntityException("There isn't such employee id: " + id));
     }
 
@@ -37,18 +38,18 @@ public class EmployeeService implements EmployeeServiceImplementation {
      * @param createCommand which got from JSON.
      */
     public void save(EmployeeCreateCommand createCommand) {
-        var store = storeService.getInfoFromIdStore(createCommand.getStoreId());
-        var employee = new Employee(createCommand.getFirstName(), createCommand.getLastName(),
+        final var store = storeService.getInfoFromIdStore(createCommand.getStoreId());
+        final var employee = new Employee(createCommand.getFirstName(), createCommand.getLastName(),
                 createCommand.getPosition(), createCommand.getSalary(), store);
         employeeDatabaseRepository.add(employee);
-        log.info("The employee has been saved");
+        log.info("The employee has been saved {}", employee);
     }
 
     /**
      * @return summa of all employees
      */
     public IntSummaryStatistics loadAllSalaryOfEmployees() {
-        var employees = employeeDatabaseRepository.loadAllEmployees();
+        final var employees = employeeDatabaseRepository.loadAllEmployees();
         return employees.stream().collect(Collectors.summarizingInt(Employee::getSalary));
     }
 }

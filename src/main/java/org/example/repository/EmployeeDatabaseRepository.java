@@ -2,7 +2,7 @@ package org.example.repository;
 
 import lombok.extern.slf4j.Slf4j;
 import org.example.exception.IncorrectSQLInputException;
-import org.example.exception.NoSuchEntityException;
+import org.example.interfaces.EmployeeRepository;
 import org.example.modal.Employee;
 import org.example.modal.Store;
 
@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 @Slf4j
-public class EmployeeDatabaseRepository {
+public class EmployeeDatabaseRepository implements EmployeeRepository {
     private static final String DELETE_FROM_DB = "DELETE FROM employee WHERE employee.id = ?";
     private static final String INSERT = "INSERT INTO employee(store, `first name`, `last name`, position, salary) VALUES (?,?,?,?,?)";
     private static final String SELECT = "SELECT * FROM employee JOIN store ON employee.store = store.id  WHERE employee.id = ?";
@@ -25,7 +25,6 @@ public class EmployeeDatabaseRepository {
      */
     public void add(Employee employee) {
         try (final var preparedStatement = openConnection().prepareStatement(INSERT)) {
-            log.info("Success connection");
             preparedStatement.setInt(1, employee.getStore().getId());
             preparedStatement.setString(2, employee.getFirstName());
             preparedStatement.setString(3, employee.getLastName());
@@ -44,11 +43,9 @@ public class EmployeeDatabaseRepository {
      */
     public Optional<Employee> load(int id) {
         try (final var statement = openConnection().prepareStatement(SELECT)) {
-            log.info("Success connection");
             statement.setInt(1, id);
-            var resultSet = statement.executeQuery();
+            final var resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                log.info("Getting employee object, if we get empty object, we will get NoSuchEntityException");
                 return Optional.of(loadEmployee(resultSet));
             } else {
                 return Optional.empty();
@@ -62,11 +59,10 @@ public class EmployeeDatabaseRepository {
      * @param id which is needed to delete
      * @return either success or not.
      */
-    public int remove(int id) {
-        try (var statement = openConnection().prepareStatement(DELETE_FROM_DB)) {
-            log.info("Success connection");
+    public boolean remove(int id) {
+        try (final var statement = openConnection().prepareStatement(DELETE_FROM_DB)) {
             statement.setInt(1, id);
-            return statement.executeUpdate();
+            return statement.execute();
         } catch (SQLException e) {
             throw new IncorrectSQLInputException("Impossible deleting", e);
         }
@@ -76,9 +72,8 @@ public class EmployeeDatabaseRepository {
      * @return list with all salaries;
      */
     public ArrayList<Employee> loadAllEmployees() {
-        var employees = new ArrayList<Employee>();
+        final var employees = new ArrayList<Employee>();
         try (final var statement = openConnection().createStatement()) {
-            log.info("Success connection");
             var resultSet = statement.executeQuery(SELECT_ALL_EMPLOYEE);
             while (resultSet.next()) {
                 employees.add(loadEmployee(resultSet));
@@ -95,7 +90,6 @@ public class EmployeeDatabaseRepository {
                 resultSet.getString("last name"), resultSet.getString("position"),
                 resultSet.getInt("salary"),
                 new Store(resultSet.getInt("id"), resultSet.getString("name store"), resultSet.getString("town")));
-
     }
 
     private Connection openConnection() {

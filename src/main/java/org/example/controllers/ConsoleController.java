@@ -38,8 +38,8 @@ public class ConsoleController {
                 System.out.println("5 - remove store to database.");
                 System.out.println("6 - get information of store by ID.");
                 System.out.println("7 - get summa salary from every employees.");
-                log.info("User chose option who needs him/her");
                 var option = scanner.nextInt();
+                log.info("User chose option who needs him/her. function:{}", option);
                 switch (option) {
                     case 1 -> {
                         System.out.println("Enter JSON string");
@@ -51,7 +51,6 @@ public class ConsoleController {
                     case 2 -> {
                         System.out.println("What's id you want to delete?");
                         var id = scanner.nextInt();
-                        log.info("Load id and send it to delete method {}", id);
                         employeeService.deleteEmployee(id);
                     }
                     case 3 -> {
@@ -67,7 +66,7 @@ public class ConsoleController {
                         System.out.println("Beginning with HM, ending number of store");
                         System.out.println("Town where this store is located");
                         var json = scanner.next();
-                        var store = controller.getStoreObject(json);
+                        var store = controller.convertStoreObject(json);
                         log.info("Load store object {} and send it to add method to DB", store);
                         storeService.add(store);
                     }
@@ -94,7 +93,7 @@ public class ConsoleController {
                 operator = 1;
                 System.out.println("Finish. Thank you for spending your time here.");
             } else {
-                throw new NoSuchEntityException("Wow, man, your number isn't 1 or 2.");
+                throw new NoSuchEntityException("Your number isn't 1 or 2.");
             }
         }
     }
@@ -114,7 +113,7 @@ public class ConsoleController {
      * @return store object from json format.
      */
     @SneakyThrows
-    private StoreCreateCommand getStoreObject(String json) {
+    private StoreCreateCommand convertStoreObject(String json) {
         var objectMapper = new ObjectMapper();
         return objectMapper.readValue(json, StoreCreateCommand.class);
     }
